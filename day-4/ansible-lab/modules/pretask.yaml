@@ -1,0 +1,20 @@
+
+- name: check the background
+  apt:
+    update_cache: true
+    cache_valid_time: 3600
+
+- name: Gather OS Information
+  setup:
+    gather_subset:
+      - "os_family"
+
+- name: Print OS Information
+  debug:
+    msg: "The Remote OS is : {{ansible_os_family}}"
+
+- name: create an empty directory
+  file:
+    path: ./ici-securities-dir
+    state: directory
+

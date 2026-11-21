@@ -1,0 +1,19 @@
+
+- name: install Apache
+  apt:
+    name:
+      - apache2
+    state: latest
+
+- name: check installation status
+  command: systemctl status apache2
+  register: apache_status
+
+- name: print status
+  debug:
+    msg: "{{apache_status.stdout}}"
+    
+- name: replace default html page
+  copy:
+    src: index.html
+    dest: /var/www/html

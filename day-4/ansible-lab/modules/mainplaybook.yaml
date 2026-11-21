@@ -1,0 +1,11 @@
+
+- hosts: db
+  become: true
+  pre_tasks:
+    - name: Load the Background checks
+      import_tasks: pretask.yaml
+
+  post_tasks:  
+    - name: Performing Main operation
+      import_tasks: postttask.yaml
+    

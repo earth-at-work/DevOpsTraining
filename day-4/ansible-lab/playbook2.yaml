@@ -1,0 +1,14 @@
+
+- hosts: db
+  become: true
+  tasks:
+    - name: create an empty directory
+      file:
+        path: ./my-dir2
+        state: directory
+      register: dir_stat
+
+    - name: print directory status
+      debug:
+        msg: "directory is created"
+      when: dir_stat.changed

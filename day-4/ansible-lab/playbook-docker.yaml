@@ -1,0 +1,50 @@
+
+- name: Install docker and deploy APP
+  hosts: db
+  become: true
+  vars:
+    app_dir: /opt/fastapi-docker
+    image_name: fastapi-app
+    container_name: fastapi-container
+  
+  pre_tasks:
+    - name: update cache
+      apt:
+        update_cache: true
+    
+    - name: install docker
+      apt:
+        name: docker.io
+        state: present
+    - name: ensure docker status up
+      service:
+        name: docker
+        state: started
+        enabled: true
+  
+  tasks:
+    - name: create app directory
+      file:
+        path: "{{app_dir}}"
+        state: directory
+    - name: copy fastapi
+      copy:
+        src: ./fastapi_app/
+        dest: "{{app_dir}}"
+
+    - name: build docker file
+      command: docker build -t "{{image_name}}" .
+      args:
+        chdir: "{{app_dir}}"
+    
+    - name: stop or remove any existing same container
+      shell: |
+        docker rm -f {{container_name}} || true
+    
+    - name: run the container
+      command: >
+        docker run -d --name {{container_name}}
+        -p 9000:8000 {{image_name}}
+
+
+

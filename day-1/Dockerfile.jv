@@ -1,0 +1,20 @@
+# build stage
+
+FROM openjdk:11-ea-jdk-slim AS build
+
+WORKDIR /app
+
+COPY Hello.java .
+
+RUN javac Hello.java
+
+CMD [ "java" , "Hello"]
+
+# runtime stage
+FROM openjdk:11-ea-jre-slim
+
+WORKDIR /app
+
+COPY --from=build /app/Hello.class .
+
+CMD [ "java" , "Hello"]

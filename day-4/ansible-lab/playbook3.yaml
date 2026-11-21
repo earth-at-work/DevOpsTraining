@@ -1,0 +1,21 @@
+
+- hosts: db
+  become: true
+  tasks:
+    - name: update package manager
+      apt:
+        update_cache: true
+        
+    - name: install Apache on remote machine
+      apt:
+        name:
+         - apache2
+        state: latest
+
+    - name: check installation status
+      command: systemctl status apache2
+      register: apache_status
+
+    - name: print status
+      debug:
+        msg: "{{apache_status.stdout}}"
